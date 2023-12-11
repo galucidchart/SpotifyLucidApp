@@ -26,7 +26,7 @@ function WebPlayback(props) {
     const [tot_sec, setTotSec] = useState(0);
 
     useEffect(() => {
-
+ 
         const script = document.createElement("script");
         script.src = "https://sdk.scdn.co/spotify-player.js";
         script.async = true;
@@ -36,7 +36,7 @@ function WebPlayback(props) {
         window.onSpotifyWebPlaybackSDKReady = () => {
 
             const player = new window.Spotify.Player({
-                name: 'Web Playback SDK',
+                name: 'Lucid Web Player for Spotify',
                 getOAuthToken: cb => { cb(props.token); },
                 volume: 1
             });
@@ -59,9 +59,6 @@ function WebPlayback(props) {
                 let dur_min = Math.floor(state.duration / 1000 / 60);
                 let dur_str = dur_min + (dur_sec < 10 ? ":0" : ":") + dur_sec;
                 setDuration(dur_str);
-
-                
-
 
 
                 if (!state) {
@@ -124,7 +121,7 @@ function WebPlayback(props) {
                 <div className="slider_container">
                 <div className="current-time">{curr_time}</div>
                 <input type="range" min="0" max={tot_sec}
-                    className="seek_slider" value={slider_val} onChange={(e) => {seekTo(e.target.value, player); setSlider(e.target.value)}}></input>
+                    className="seek_slider" style={{background:`linear-gradient(to right, green 0%, green ${getGradientPercentage(slider_val, tot_sec)}, ${getGradientPercentage(slider_val, tot_sec)}, black 100%)`}} value={slider_val} onChange={(e) => {seekTo(e.target.value, player); setSlider(e.target.value); getGradientPercentage(e.target.value, tot_sec)}}></input>
                 <div className="total-duration">{total_duration}</div>
                 </div>
 
@@ -142,6 +139,12 @@ function WebPlayback(props) {
     }
     
 }
+
+const getGradientPercentage = (value, td) => {
+    // Calculate the percentage based on the slider value
+    const percentage = (value) / (td) * 100;
+    return `${percentage}%`;
+  };
 
 function seekTo(pos, player) {
     player.seek(pos * 1000);
